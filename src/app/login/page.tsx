@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { login } from "./actions";
+import InputGroup from "@/components/InputGroup";
+import Input from "@/components/Input";
 
 export default function Login() {
   const [error, setError] = useState<string | null>(null);
@@ -29,34 +31,24 @@ export default function Login() {
               {error}
             </div>
           )}
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-[#7A7CFF] focus:border-[#7A7CFF] focus:z-10 sm:text-sm"
-                placeholder="Email"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Contraseña
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-[#7A7CFF] focus:border-[#7A7CFF] focus:z-10 sm:text-sm"
-                placeholder="Contraseña"
-              />
-            </div>
-          </div>
+          <InputGroup>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              label="Email"
+              variant="top"
+              required
+            />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              label="Contraseña"
+              variant="bottom"
+              required
+            />
+          </InputGroup>
 
           <div>
             <button

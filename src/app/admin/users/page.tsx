@@ -6,15 +6,17 @@ export default async function AdminUsersPage() {
 
   const { data } = await supabase
     .from("profiles")
-    .select(`
+    .select(
+      `
       id,
       full_name,
       occupation,
       birth_date,
       phone,
       created_at
-      `)
-      .order("created_at", { ascending: false });
+      `
+    )
+    .order("created_at", { ascending: false });
 
   return (
     <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">

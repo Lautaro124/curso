@@ -1,6 +1,7 @@
 import { createSSRClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Input from "@/components/Input";
 
 export default async function NewModulePage({
   params,
@@ -42,22 +43,21 @@ export default async function NewModulePage({
           method="POST"
           className="space-y-6"
         >
-          <input type="hidden" name="action" value="create" />
-          <input type="hidden" name="course_id" value={params.courseId} />
+          <Input type="hidden" name="action" value="create" label={""} />
+          <Input
+            type="hidden"
+            name="course_id"
+            value={params.courseId}
+            label={""}
+          />
 
           <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Nombre del Módulo
-            </label>
-            <input
+            <Input
               type="text"
               name="name"
               id="name"
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm text-black"
+              label={" Nombre del Módulo"}
             />
           </div>
 

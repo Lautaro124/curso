@@ -1,7 +1,7 @@
+import Input from "@/components/Input";
 import Link from "next/link";
 
 export default async function NewCoursePage() {
-
   return (
     <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6">
@@ -27,31 +27,21 @@ export default async function NewCoursePage() {
           <input type="hidden" name="action" value="create" />
 
           <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Nombre del Curso
-            </label>
-            <input
+            <Input
               type="text"
               name="name"
               id="name"
+              label="Nombre del Curso"
               required
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
             />
           </div>
 
           <div>
-            <label
-              htmlFor="preview_image"
-              className="block text-sm font-medium text-gray-700"
-            >
-              URL de la Imagen de Vista Previa
-            </label>
-            <input
+            <Input
               type="url"
               name="preview_image"
+              label="URL de la Imagen de Vista Previa"
               id="preview_image"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
             />
