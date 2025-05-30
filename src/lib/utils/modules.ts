@@ -164,3 +164,69 @@ export async function getModuleLessons(moduleId: string, userId: string) {
   console.log("Lecciones del módulo obtenidas:", lessons);
   return lessons || [];
 }
+
+export async function getLessonNavigation(lessonId: string, userId: string) {
+  const supabase = await createSSRClient();
+
+  console.log(
+    "Obteniendo navegación para la lección:",
+    lessonId,
+    "para usuario:",
+    userId
+  );
+
+  // Obtener la lección actual
+  const { data: currentLesson, error: lessonError } = await supabase
+    .from("lessons")
+    .select("id, name, module_id, created_at")
+    .eq("id", lessonId)
+    .single();
+
+  if (lessonError || !currentLesson) {
+    console.log("Error al obtener la lección actual:", lessonError);
+    return { previous: null, next: null };
+  }
+
+  // Verificar si el usuario tiene acceso al módulo
+  const { data: userModule } = await supabase
+    .from("user_modules")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("module_id", currentLesson.module_id)
+    .single();
+
+  if (!userModule) {
+    console.log("Usuario no tiene acceso a esta lección");
+    return { previous: null, next: null };
+  }
+
+  // Obtener todas las lecciones del módulo ordenadas por fecha de creación
+  const { data: allLessons, error } = await supabase
+    .from("lessons")
+    .select("id, name, created_at")
+    .eq("module_id", currentLesson.module_id)
+    .order("created_at", { ascending: true });
+
+  if (error || !allLessons) {
+    console.error("Error al obtener todas las lecciones:", error);
+    return { previous: null, next: null };
+  }
+
+  // Encontrar el índice de la lección actual
+  const currentIndex = allLessons.findIndex((lesson) => lesson.id === lessonId);
+
+  if (currentIndex === -1) {
+    return { previous: null, next: null };
+  }
+
+  const navigation = {
+    previous: currentIndex > 0 ? allLessons[currentIndex - 1] : null,
+    next:
+      currentIndex < allLessons.length - 1
+        ? allLessons[currentIndex + 1]
+        : null,
+  };
+
+  console.log("Navegación obtenida:", navigation);
+  return navigation;
+}

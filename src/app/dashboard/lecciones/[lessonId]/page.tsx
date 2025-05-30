@@ -1,5 +1,5 @@
 import { createSSRClient } from "@/lib/supabase/server";
-import { getLessonDetails } from "@/lib/utils/modules";
+import { getLessonDetails, getLessonNavigation } from "@/lib/utils/modules";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { VideoPlayer } from "@/components/VideoPlayer";
@@ -21,6 +21,7 @@ export default async function LessonDetailPage({ params }: PageProps) {
   }
 
   const lessonDetail = await getLessonDetails(lessonId, user.id);
+  const navigation = await getLessonNavigation(lessonId, user.id);
 
   if (!lessonDetail) {
     redirect("/dashboard");
@@ -208,6 +209,67 @@ export default async function LessonDetailPage({ params }: PageProps) {
                 </div>
               </div>
             </div>
+          )}
+        </div>
+      </div>
+
+      {/* Navegación entre lecciones */}
+      <div className="mt-8 flex justify-between items-center">
+        <div className="flex-1">
+          {navigation.previous ? (
+            <Link
+              href={`/dashboard/lecciones/${navigation.previous.id}`}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              <div className="text-left">
+                <div className="text-xs text-gray-500">Lección anterior</div>
+                <div className="font-medium">{navigation.previous.name}</div>
+              </div>
+            </Link>
+          ) : (
+            <div></div>
+          )}
+        </div>
+
+        <div className="flex-1 text-right">
+          {navigation.next ? (
+            <Link
+              href={`/dashboard/lecciones/${navigation.next.id}`}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#7A7CFF] hover:bg-[#6B6DFF] text-white rounded-lg transition-colors"
+            >
+              <div className="text-right">
+                <div className="text-xs text-blue-100">Siguiente lección</div>
+                <div className="font-medium">{navigation.next.name}</div>
+              </div>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Link>
+          ) : (
+            <div></div>
           )}
         </div>
       </div>
