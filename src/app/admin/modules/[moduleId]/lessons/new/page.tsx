@@ -64,7 +64,7 @@ export default async function NewLessonPage({
               name="name"
               id="name"
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
+              className="mt-1 block w-full rounded-md text-black border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
             />
           </div>
 
@@ -79,7 +79,7 @@ export default async function NewLessonPage({
               name="description"
               id="description"
               rows={5}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
+              className="text-black mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
             />
           </div>
 
@@ -94,7 +94,7 @@ export default async function NewLessonPage({
               type="url"
               name="video_url"
               id="video_url"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
+              className="text-black mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
             />
           </div>
 
@@ -110,7 +110,7 @@ export default async function NewLessonPage({
               id="attachments"
               rows={3}
               placeholder='[{"name": "Documento PDF", "url": "https://example.com/doc.pdf"}]'
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
+              className="text-black mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
             />
           </div>
 
@@ -126,7 +126,7 @@ export default async function NewLessonPage({
               id="qa"
               rows={3}
               placeholder='[{"question": "¿Pregunta 1?", "answer": "Respuesta 1"}]'
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
+              className="text-black mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
             />
           </div>
 
