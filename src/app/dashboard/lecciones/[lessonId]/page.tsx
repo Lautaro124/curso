@@ -44,9 +44,12 @@ export default async function LessonDetailPage({ params }: PageProps) {
               <span className="text-gray-400">/</span>
             </li>
             <li>
-              <span className="text-gray-500 hover:text-gray-700">
+              <Link
+                href={`/dashboard/modulos/${lessonDetail.module_id}`}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
                 {lessonDetail.module_name}
-              </span>
+              </Link>
             </li>
             <li>
               <span className="text-gray-400">/</span>
@@ -60,7 +63,6 @@ export default async function LessonDetailPage({ params }: PageProps) {
         </nav>
       </div>
 
-      {/* Lesson Header */}
       <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
           {lessonDetail.name}
@@ -71,9 +73,7 @@ export default async function LessonDetailPage({ params }: PageProps) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
         <div className="lg:col-span-2">
-          {/* Video Section */}
           {lessonDetail.video_url && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-6">
               <div className="p-6">
@@ -133,7 +133,6 @@ export default async function LessonDetailPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* Description Section */}
           {lessonDetail.description && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-6">
               <div className="p-6">
@@ -150,9 +149,7 @@ export default async function LessonDetailPage({ params }: PageProps) {
           )}
         </div>
 
-        {/* Sidebar */}
         <div className="lg:col-span-1">
-          {/* Attachments Section */}
           {lessonDetail.attachments && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-6">
               <div className="p-6">
@@ -183,7 +180,6 @@ export default async function LessonDetailPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* Q&A Section */}
           {lessonDetail.qa && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-100">
               <div className="p-6">
