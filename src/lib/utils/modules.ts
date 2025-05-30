@@ -23,50 +23,38 @@ export async function getModuleWithLessons(moduleId: string, userId: string) {
     return null;
   }
 
-  // Obtener los detalles del módulo con sus lecciones
+  // Obtener los detalles del módulo
   const { data: moduleDetail, error } = await supabase
     .from("modules")
-    .select(
-      `
-      id,
-      name,
-      is_paid,
-      courses!inner (
-        name
-      ),
-      lessons (
-        id,
-        name,
-        description,
-        video_url,
-        attachments,
-        qa,
-        created_at
-      )
-    `
-    )
+    .select("id, name, is_paid, course_id")
     .eq("id", moduleId)
     .single();
 
-  if (error) {
+  if (error || !moduleDetail) {
     console.error("Error al obtener detalles del módulo:", error);
     return null;
   }
 
-  if (!moduleDetail) {
-    return null;
-  }
+  // Obtener el curso asociado
+  const { data: course } = await supabase
+    .from("courses")
+    .select("name")
+    .eq("id", moduleDetail.course_id)
+    .single();
 
-  // Transformar la respuesta para que coincida con el tipo esperado
+  // Obtener las lecciones del módulo
+  const { data: lessons } = await supabase
+    .from("lessons")
+    .select("id, name, description, video_url, attachments, qa, created_at")
+    .eq("module_id", moduleId)
+    .order("created_at", { ascending: true });
+
   const result = {
     id: moduleDetail.id,
     name: moduleDetail.name,
     is_paid: moduleDetail.is_paid,
-    course_name: moduleDetail.courses.name,
-    lessons: moduleDetail.lessons.sort(
-      (a, b) =>
-        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-    ),
+    course_name: course?.name || "Curso no encontrado",
+    lessons: lessons || [],
   };
 
   console.log("Detalles del módulo obtenidos:", result);
@@ -83,49 +71,96 @@ export async function getLessonDetails(lessonId: string, userId: string) {
     userId
   );
 
-  // Primero verificar si el usuario tiene acceso a esta lección a través del módulo
-  const { data: lessonAccess, error: accessError } = await supabase
+  // Obtener la lección
+  const { data: lesson, error: lessonError } = await supabase
     .from("lessons")
-    .select(
-      `
-      id,
-      name,
-      description,
-      video_url,
-      attachments,
-      qa,
-      modules!inner (
-        id,
-        name,
-        courses!inner (
-          name
-        ),
-        user_modules!inner (
-          user_id
-        )
-      )
-    `
-    )
+    .select("id, name, description, video_url, attachments, qa, module_id")
     .eq("id", lessonId)
-    .eq("modules.user_modules.user_id", userId)
     .single();
 
-  if (accessError || !lessonAccess) {
-    console.log("Usuario no tiene acceso a esta lección:", accessError);
+  if (lessonError || !lesson) {
+    console.log("Error al obtener la lección:", lessonError);
     return null;
   }
 
+  // Verificar si el usuario tiene acceso al módulo de esta lección
+  const { data: userModule } = await supabase
+    .from("user_modules")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("module_id", lesson.module_id)
+    .single();
+
+  if (!userModule) {
+    console.log("Usuario no tiene acceso a esta lección");
+    return null;
+  }
+
+  // Obtener información del módulo
+  const { data: module } = await supabase
+    .from("modules")
+    .select("name, course_id")
+    .eq("id", lesson.module_id)
+    .single();
+
+  // Obtener información del curso
+  const { data: course } = await supabase
+    .from("courses")
+    .select("name")
+    .eq("id", module?.course_id)
+    .single();
+
   const result = {
-    id: lessonAccess.id,
-    name: lessonAccess.name,
-    description: lessonAccess.description,
-    video_url: lessonAccess.video_url,
-    attachments: lessonAccess.attachments,
-    qa: lessonAccess.qa,
-    module_name: lessonAccess.modules.name,
-    course_name: lessonAccess.modules.courses.name,
+    id: lesson.id,
+    name: lesson.name,
+    description: lesson.description,
+    video_url: lesson.video_url,
+    attachments: lesson.attachments,
+    qa: lesson.qa,
+    module_id: lesson.module_id,
+    module_name: module?.name || "Módulo no encontrado",
+    course_name: course?.name || "Curso no encontrado",
   };
 
   console.log("Detalles de la lección obtenidos:", result);
   return result;
+}
+
+export async function getModuleLessons(moduleId: string, userId: string) {
+  const supabase = await createSSRClient();
+
+  console.log(
+    "Obteniendo lecciones del módulo:",
+    moduleId,
+    "para usuario:",
+    userId
+  );
+
+  // Verificar si el usuario tiene acceso al módulo
+  const { data: userModule } = await supabase
+    .from("user_modules")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("module_id", moduleId)
+    .single();
+
+  if (!userModule) {
+    console.log("Usuario no tiene acceso al módulo");
+    return [];
+  }
+
+  // Obtener todas las lecciones del módulo
+  const { data: lessons, error } = await supabase
+    .from("lessons")
+    .select("id, name, description, video_url, created_at")
+    .eq("module_id", moduleId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("Error al obtener lecciones del módulo:", error);
+    return [];
+  }
+
+  console.log("Lecciones del módulo obtenidas:", lessons);
+  return lessons || [];
 }

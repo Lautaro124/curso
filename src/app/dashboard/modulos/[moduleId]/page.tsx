@@ -1,23 +1,15 @@
 import { createSSRClient } from "@/lib/supabase/server";
-import { getModuleWithLessons } from "@/lib/utils/modules";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { getModuleWithLessons } from "@/lib/utils/modules";
 
 type Lesson = {
   id: string;
   name: string;
   description: string | null;
   video_url: string | null;
-  attachments: any;
-  qa: any;
-};
-
-type ModuleDetail = {
-  id: string;
-  name: string;
-  is_paid: boolean;
-  course_name: string;
-  lessons: Lesson[];
+  attachments: Record<string, unknown> | null;
+  qa: Record<string, unknown> | null;
 };
 
 interface PageProps {
@@ -100,7 +92,7 @@ export default async function ModuleDetailPage({ params }: PageProps) {
             </div>
           ) : (
             <div className="space-y-4">
-              {moduleDetail.lessons.map((lesson, index) => (
+              {moduleDetail.lessons.map((lesson: Lesson, index: number) => (
                 <div
                   key={lesson.id}
                   className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"

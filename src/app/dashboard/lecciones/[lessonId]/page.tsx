@@ -2,17 +2,7 @@ import { createSSRClient } from "@/lib/supabase/server";
 import { getLessonDetails } from "@/lib/utils/modules";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-
-type LessonDetail = {
-  id: string;
-  name: string;
-  description: string | null;
-  video_url: string | null;
-  attachments: any;
-  qa: any;
-  module_name: string;
-  course_name: string;
-};
+import { VideoPlayer } from "@/components/VideoPlayer";
 
 interface PageProps {
   params: Promise<{ lessonId: string }>;
@@ -87,13 +77,13 @@ export default async function LessonDetailPage({ params }: PageProps) {
           {lessonDetail.video_url && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-6">
               <div className="p-6">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                  Video de la lección
-                </h2>
-                <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-                  <div className="text-center">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    Video de la lección
+                  </h2>
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
                     <svg
-                      className="w-16 h-16 text-gray-400 mx-auto mb-4"
+                      className="w-4 h-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -102,32 +92,42 @@ export default async function LessonDetailPage({ params }: PageProps) {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-4h1M9 18h6m-7 0h1m6 0h1M6 10h1m6 0h1m-8 4h1m8 0h1"
+                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
                       />
                     </svg>
-                    <p className="text-gray-600 mb-2">Video disponible</p>
-                    <a
-                      href={lessonDetail.video_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center px-4 py-2 bg-[#7A7CFF] text-white rounded-md hover:bg-[#6A6CFF] transition-colors"
-                    >
-                      Ver video
-                      <svg
-                        className="w-4 h-4 ml-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                    </a>
+                    HD Quality
                   </div>
+                </div>
+                <VideoPlayer
+                  videoUrl={lessonDetail.video_url}
+                  title={lessonDetail.name}
+                />
+                <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
+                  <span>
+                    Utiliza los controles del reproductor para ajustar la
+                    calidad y velocidad
+                  </span>
+                  <a
+                    href={lessonDetail.video_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 hover:text-[#7A7CFF] transition-colors"
+                  >
+                    Abrir en nueva pestaña
+                    <svg
+                      className="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </svg>
+                  </a>
                 </div>
               </div>
             </div>
