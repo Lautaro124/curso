@@ -57,7 +57,7 @@ export default async function NewModulePage({
               name="name"
               id="name"
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm text-black"
             />
           </div>
 
