@@ -3,13 +3,6 @@ import { createSSRClient } from "../supabase/server";
 export async function getModuleWithLessons(moduleId: string, userId: string) {
   const supabase = await createSSRClient();
 
-  console.log(
-    "Obteniendo detalles del módulo:",
-    moduleId,
-    "para usuario:",
-    userId
-  );
-
   // Verificar si el usuario tiene acceso al módulo
   const { data: userModule } = await supabase
     .from("user_modules")
@@ -19,7 +12,6 @@ export async function getModuleWithLessons(moduleId: string, userId: string) {
     .single();
 
   if (!userModule) {
-    console.log("Usuario no tiene acceso al módulo");
     return null;
   }
 
@@ -57,19 +49,11 @@ export async function getModuleWithLessons(moduleId: string, userId: string) {
     lessons: lessons || [],
   };
 
-  console.log("Detalles del módulo obtenidos:", result);
   return result;
 }
 
 export async function getLessonDetails(lessonId: string, userId: string) {
   const supabase = await createSSRClient();
-
-  console.log(
-    "Obteniendo detalles de la lección:",
-    lessonId,
-    "para usuario:",
-    userId
-  );
 
   // Obtener la lección
   const { data: lesson, error: lessonError } = await supabase
@@ -79,7 +63,6 @@ export async function getLessonDetails(lessonId: string, userId: string) {
     .single();
 
   if (lessonError || !lesson) {
-    console.log("Error al obtener la lección:", lessonError);
     return null;
   }
 
@@ -92,7 +75,6 @@ export async function getLessonDetails(lessonId: string, userId: string) {
     .single();
 
   if (!userModule) {
-    console.log("Usuario no tiene acceso a esta lección");
     return null;
   }
 
@@ -122,19 +104,11 @@ export async function getLessonDetails(lessonId: string, userId: string) {
     course_name: course?.name || "Curso no encontrado",
   };
 
-  console.log("Detalles de la lección obtenidos:", result);
   return result;
 }
 
 export async function getModuleLessons(moduleId: string, userId: string) {
   const supabase = await createSSRClient();
-
-  console.log(
-    "Obteniendo lecciones del módulo:",
-    moduleId,
-    "para usuario:",
-    userId
-  );
 
   // Verificar si el usuario tiene acceso al módulo
   const { data: userModule } = await supabase
@@ -145,7 +119,6 @@ export async function getModuleLessons(moduleId: string, userId: string) {
     .single();
 
   if (!userModule) {
-    console.log("Usuario no tiene acceso al módulo");
     return [];
   }
 
@@ -161,19 +134,11 @@ export async function getModuleLessons(moduleId: string, userId: string) {
     return [];
   }
 
-  console.log("Lecciones del módulo obtenidas:", lessons);
   return lessons || [];
 }
 
 export async function getLessonNavigation(lessonId: string, userId: string) {
   const supabase = await createSSRClient();
-
-  console.log(
-    "Obteniendo navegación para la lección:",
-    lessonId,
-    "para usuario:",
-    userId
-  );
 
   // Obtener la lección actual
   const { data: currentLesson, error: lessonError } = await supabase
@@ -183,7 +148,6 @@ export async function getLessonNavigation(lessonId: string, userId: string) {
     .single();
 
   if (lessonError || !currentLesson) {
-    console.log("Error al obtener la lección actual:", lessonError);
     return { previous: null, next: null };
   }
 
@@ -196,7 +160,6 @@ export async function getLessonNavigation(lessonId: string, userId: string) {
     .single();
 
   if (!userModule) {
-    console.log("Usuario no tiene acceso a esta lección");
     return { previous: null, next: null };
   }
 
@@ -227,6 +190,5 @@ export async function getLessonNavigation(lessonId: string, userId: string) {
         : null,
   };
 
-  console.log("Navegación obtenida:", navigation);
   return navigation;
 }

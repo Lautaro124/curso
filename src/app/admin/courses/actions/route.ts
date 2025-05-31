@@ -9,14 +9,12 @@ export async function POST(request: Request) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log("Usuario autenticado:", user?.id);
 
   if (!user) {
     redirect("/");
   }
 
   const isAdmin = await isAdminValidation(user.id);
-  console.log("Es admin:", isAdmin);
 
   if (!isAdmin) {
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
@@ -24,7 +22,6 @@ export async function POST(request: Request) {
 
   const formData = await request.formData();
   const action = formData.get("action") as string;
-  console.log("Acción recibida:", action);
 
   if (action === "create") {
     const name = formData.get("name") as string;
@@ -68,7 +65,6 @@ export async function POST(request: Request) {
     const name = formData.get("name") as string;
     const preview_image = formData.get("preview_image") as string;
 
-    console.log("Datos para actualizar:", { courseId, name, preview_image });
 
     if (!courseId) {
       return NextResponse.json(
@@ -117,7 +113,6 @@ export async function POST(request: Request) {
           error.message.includes("permission denied") ||
           error.message.includes("insufficient_privilege")
         ) {
-          console.log("Intentando actualizar con bypass RLS...");
 
           const { error: adminError } = await supabase.rpc(
             "update_course_as_admin",
@@ -139,7 +134,6 @@ export async function POST(request: Request) {
             );
           }
 
-          console.log("Curso actualizado exitosamente con RPC");
         } else {
           return NextResponse.json(
             {
@@ -150,7 +144,6 @@ export async function POST(request: Request) {
           );
         }
       } else {
-        console.log("Curso actualizado exitosamente");
       }
     } catch (err) {
       console.error("Error inesperado:", err);
