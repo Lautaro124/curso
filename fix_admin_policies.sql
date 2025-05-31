@@ -117,3 +117,37 @@ BEGIN
   END IF;
 END;
 $$;
+
+-- Función RPC para actualizar módulos como administrador (bypass RLS)
+CREATE OR REPLACE FUNCTION update_module_as_admin(
+  module_id uuid,
+  module_name text,
+  module_is_paid boolean
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY definer
+AS $$
+BEGIN
+  -- Verificar si el usuario es administrador
+  IF NOT EXISTS (
+    SELECT 1 FROM public.profiles 
+    WHERE id = auth.uid() AND is_admin = true
+  ) THEN
+    RAISE EXCEPTION 'Access denied: user is not an admin';
+  END IF;
+
+  -- Actualizar el módulo
+  UPDATE public.modules 
+  SET 
+    name = module_name,
+    is_paid = module_is_paid,
+    updated_at = now()
+  WHERE id = module_id;
+
+  -- Verificar si se actualizó algún registro
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Module not found with id: %', module_id;
+  END IF;
+END;
+$$;
