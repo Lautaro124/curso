@@ -44,7 +44,6 @@ export async function getAllCourses() {
 export async function getUserCoursesWithModules(userId: string) {
   const supabase = await createSSRClient();
 
-  console.log("Obteniendo cursos para el usuario:", userId);
 
   const { data: courses, error: coursesError } = await supabase
     .from("courses")
@@ -89,7 +88,6 @@ export async function getUserCoursesWithModules(userId: string) {
     return [];
   }
 
-  console.log("Módulos del usuario obtenidos:", userModules);
 
   // Crear un conjunto de IDs de módulos habilitados
   const enabledModuleIds = new Set(userModules?.map((m) => m.module_id) || []);
@@ -103,7 +101,6 @@ export async function getUserCoursesWithModules(userId: string) {
     return acc;
   }, {} as Record<string, typeof modules>);
 
-  console.log("Módulos agrupados por curso:", modulesByCourse);
 
   // Construir el resultado
   const result = courses.map((course) => {
@@ -134,7 +131,6 @@ export async function getUserCoursesWithModules(userId: string) {
     };
   });
 
-  console.log("Resultado final:", result);
 
   return result;
 }

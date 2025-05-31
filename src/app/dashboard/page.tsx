@@ -1,5 +1,6 @@
 import { createSSRClient } from "@/lib/supabase/server";
 import { getUserCoursesWithModules } from "@/lib/utils/courses";
+import Link from "next/link";
 
 type Course = {
   course_id: string;
@@ -24,7 +25,6 @@ export default async function Dashboard() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  
   const courses = await getUserCoursesWithModules(user?.id || "");
 
   return (
@@ -72,13 +72,17 @@ export default async function Dashboard() {
                         key={module.id}
                         className="bg-green-50 p-4 rounded-lg border border-green-100"
                       >
+                        {" "}
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-green-800">
                             {module.name}
                           </span>
-                          <button className="px-4 py-2 bg-[#7A7CFF] text-white rounded-md hover:bg-[#6A6CFF] transition-colors text-sm">
+                          <Link
+                            href={`/dashboard/modulos/${module.id}`}
+                            className="px-4 py-2 bg-[#7A7CFF] text-white rounded-md hover:bg-[#6A6CFF] transition-colors text-sm"
+                          >
                             Ver módulo
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     ))}
@@ -98,13 +102,14 @@ export default async function Dashboard() {
                         key={module.id}
                         className="bg-gray-50 p-4 rounded-lg border border-gray-100"
                       >
+                        {" "}
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-gray-600">
                             {module.name}
                           </span>
-                          <button className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors text-sm">
-                            Ver detalles
-                          </button>
+                          <span className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md text-sm">
+                            No disponible
+                          </span>
                         </div>
                       </div>
                     ))}
