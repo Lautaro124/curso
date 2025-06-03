@@ -2,6 +2,8 @@
 
 import React, { useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Input from "./Input";
+import Image from "next/image";
 
 interface ImageUploadProps {
   name: string;
@@ -51,20 +53,17 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     setUploadError(null);
 
     try {
-      // Generar nombre único para el archivo
       const fileExt = file.name.split(".").pop();
       const fileName = `${Date.now()}-${Math.random()
         .toString(36)
         .substring(2)}.${fileExt}`;
       const filePath = `course-images/${fileName}`;
 
-      // Intentar subir archivo a Supabase Storage
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from("images")
         .upload(filePath, file);
 
       if (error) {
-        // Si hay error con Storage, mostrar mensaje pero permitir continuar
         console.warn("Storage no configurado:", error);
         setUploadError("Storage no configurado. Por favor, usa URL por ahora.");
         setUploadMethod("url");
@@ -111,9 +110,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
 
-      {/* Selector del método de carga */}
       <div className="flex space-x-4">
-        <label className="flex items-center">
+        <label className="flex items-center text-black">
           <input
             type="radio"
             value="url"
@@ -123,7 +121,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           />
           URL de imagen
         </label>
-        <label className="flex items-center">
+        <label className="flex items-center text-black">
           <input
             type="radio"
             value="file"
@@ -137,7 +135,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
       {/* Input según el método seleccionado */}
       {uploadMethod === "url" ? (
-        <input
+        <Input
+          label="URL de imagen"
           type="url"
           value={imageUrl}
           onChange={handleUrlChange}
@@ -159,14 +158,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           <p className="text-xs text-gray-500">
             Formatos soportados: PNG, JPG, JPEG. Tamaño máximo: 5MB
           </p>
-          <p className="text-xs text-orange-600">
-            Nota: Para usar subida de archivos, configura primero Supabase
-            Storage ejecutando el script setup_storage.sql
-          </p>
         </div>
       )}
 
-      {/* Estado de carga */}
       {isUploading && (
         <div className="flex items-center text-sm text-gray-600">
           <svg
@@ -193,19 +187,19 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         </div>
       )}
 
-      {/* Error */}
       {uploadError && <p className="text-sm text-red-600">{uploadError}</p>}
 
-      {/* Vista previa */}
       {previewUrl && !isUploading && (
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">
             Vista previa
           </label>
           <div className="relative inline-block">
-            <img
+            <Image
               src={previewUrl}
               alt="Vista previa"
+              width={128}
+              height={128}
               className="h-32 w-32 object-cover rounded-lg border border-gray-200"
               onError={() => {
                 setPreviewUrl("");
@@ -213,6 +207,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                   "Error al cargar la imagen. Verifica que la URL sea válida."
                 );
               }}
+              unoptimized
             />
             <button
               type="button"
