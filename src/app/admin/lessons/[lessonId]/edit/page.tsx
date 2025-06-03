@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Input from "@/components/Input";
 import Textarea from "@/components/Textarea";
 import FileUpload from "@/components/FileUpload";
+import QAEditor from "@/components/QAEditor";
 
 export default async function EditLessonPage({
   params,
@@ -130,14 +131,11 @@ export default async function EditLessonPage({
           </div>
 
           <div>
-            <Textarea
+            <QAEditor
               name="qa"
-              id="qa"
-              label="Preguntas y Respuestas (JSON)"
-              defaultValue={lesson.qa ? JSON.stringify(lesson.qa, null, 2) : ""}
-              rows={3}
-              placeholder='[{"question": "¿Pregunta 1?", "answer": "Respuesta 1"}]'
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
+              label="Preguntas y Respuestas"
+              currentQA={lesson.qa || []}
+              className="mt-1"
             />
           </div>
 

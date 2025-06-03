@@ -4,6 +4,7 @@ import Link from "next/link";
 import Input from "@/components/Input";
 import Textarea from "@/components/Textarea";
 import FileUpload from "@/components/FileUpload";
+import QAEditor from "@/components/QAEditor";
 
 export default async function NewLessonPage({
   params,
@@ -77,19 +78,13 @@ export default async function NewLessonPage({
             id="video_url"
             type="url"
             label="URL del Video"
-          />
+          />{" "}
           <FileUpload
             name="attachments"
             label="Archivos Adjuntos"
             className="mt-1"
           />
-          <Textarea
-            name="qa"
-            id="qa"
-            label="Preguntas y Respuestas (JSON)"
-            rows={3}
-            placeholder='[{"question": "¿Pregunta 1?", "answer": "Respuesta 1"}]'
-          />
+          <QAEditor name="qa" label="Preguntas y Respuestas" className="mt-1" />
           <div className="flex justify-end">
             <button
               type="submit"

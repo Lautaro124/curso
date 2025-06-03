@@ -242,7 +242,6 @@ const FileUpload: React.FC<FileUploadProps> = ({
         </div>
       )}
 
-      {/* Input oculto para enviar los archivos como JSON */}
       <input type="hidden" name={name} value={JSON.stringify(files)} />
     </div>
   );

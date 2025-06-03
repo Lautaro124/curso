@@ -27,6 +27,7 @@ export async function POST(request: Request) {
     const description = formData.get("description") as string;
     const videoUrl = formData.get("video_url") as string;
     const attachments = formData.get("attachments") as string;
+    const qa = formData.get("qa") as string;
 
     if (!moduleId || !name) {
       return new NextResponse("Faltan datos requeridos", { status: 400 });
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
     try {
       // Parsear attachments si hay datos
       let parsedAttachments = null;
+      let parsedQa = null;
 
       if (attachments && attachments.trim()) {
         try {
@@ -64,13 +66,41 @@ export async function POST(request: Request) {
         }
       }
 
+      if (qa && qa.trim()) {
+        try {
+          parsedQa = JSON.parse(qa);
+          // Validar que sea un array de objetos con question y answer
+          if (!Array.isArray(parsedQa)) {
+            return new NextResponse("Q&A debe ser un array", {
+              status: 400,
+            });
+          }
+
+          // Validar estructura de cada pregunta
+          for (const qaItem of parsedQa) {
+            if (!qaItem.question || !qaItem.answer) {
+              return new NextResponse(
+                "Cada pregunta debe tener 'question' y 'answer'",
+                {
+                  status: 400,
+                }
+              );
+            }
+          }
+        } catch {
+          return new NextResponse("Formato JSON inválido en Q&A", {
+            status: 400,
+          });
+        }
+      }
+
       const { error } = await supabase.from("lessons").insert({
         module_id: moduleId,
         name,
         description,
         video_url: videoUrl || null,
         attachments: parsedAttachments,
-        qa: null,
+        qa: parsedQa,
       });
 
       if (error) throw error;
@@ -130,6 +160,24 @@ export async function POST(request: Request) {
       if (qa && qa.trim()) {
         try {
           parsedQa = JSON.parse(qa);
+          // Validar que sea un array de objetos con question y answer
+          if (!Array.isArray(parsedQa)) {
+            return new NextResponse("Q&A debe ser un array", {
+              status: 400,
+            });
+          }
+
+          // Validar estructura de cada pregunta
+          for (const qaItem of parsedQa) {
+            if (!qaItem.question || !qaItem.answer) {
+              return new NextResponse(
+                "Cada pregunta debe tener 'question' y 'answer'",
+                {
+                  status: 400,
+                }
+              );
+            }
+          }
         } catch {
           return new NextResponse("Formato JSON inválido en Q&A", {
             status: 400,
