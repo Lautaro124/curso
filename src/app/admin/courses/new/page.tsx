@@ -1,5 +1,6 @@
 import Input from "@/components/Input";
 import Link from "next/link";
+import ImageUpload from "@/components/ImageUpload";
 
 export default async function NewCoursePage() {
   return (
@@ -37,15 +38,11 @@ export default async function NewCoursePage() {
             />
           </div>
 
-          <div>
-            <Input
-              type="url"
-              name="preview_image"
-              label="URL de la Imagen de Vista Previa"
-              id="preview_image"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
-            />
-          </div>
+          <ImageUpload
+            name="preview_image"
+            label="Imagen de Vista Previa del Curso"
+            className="mt-1"
+          />
 
           <div className="flex justify-end">
             <button

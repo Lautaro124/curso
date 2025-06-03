@@ -2,6 +2,7 @@ import { createSSRClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Input from "@/components/Input";
+import ImageUpload from "@/components/ImageUpload";
 
 export default async function EditCoursePage({
   params,
@@ -56,31 +57,12 @@ export default async function EditCoursePage({
             />
           </div>
 
-          <div>
-            <Input
-              type="url"
-              name="preview_image"
-              label="URL de la Imagen de Vista Previa"
-              id="preview_image"
-              defaultValue={course.preview_image || ""}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
-            />
-          </div>
-
-          {course.preview_image && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Vista previa actual
-              </label>
-              <div className="relative h-32 w-32">
-                <img
-                  src={course.preview_image}
-                  alt={course.name}
-                  className="object-cover rounded-lg h-full w-full border border-gray-200"
-                />
-              </div>
-            </div>
-          )}
+          <ImageUpload
+            name="preview_image"
+            label="Imagen de Vista Previa del Curso"
+            currentImage={course.preview_image || ""}
+            className="mt-1"
+          />
 
           <div className="flex gap-4">
             <button

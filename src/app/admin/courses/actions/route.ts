@@ -9,7 +9,6 @@ export async function POST(request: Request) {
     data: { user },
   } = await supabase.auth.getUser();
 
-
   if (!user) {
     redirect("/");
   }
@@ -27,6 +26,14 @@ export async function POST(request: Request) {
     const name = formData.get("name") as string;
     const preview_image = formData.get("preview_image") as string;
 
+    // Validar que el nombre no esté vacío
+    if (!name || name.trim() === "") {
+      return NextResponse.json(
+        { error: "El nombre del curso es requerido" },
+        { status: 400 }
+      );
+    }
+
     let courseId: string;
 
     try {
@@ -34,24 +41,41 @@ export async function POST(request: Request) {
       const { data: course, error } = await supabase
         .from("courses")
         .insert({
-          name,
-          preview_image: preview_image || null,
+          name: name.trim(),
+          preview_image:
+            preview_image && preview_image.trim() !== "" ? preview_image : null,
         })
         .select()
         .single();
 
       if (error) {
+        console.error("Error específico al crear curso:", error);
         return NextResponse.json(
-          { error: "Error al crear el curso" },
+          {
+            error: "Error al crear el curso",
+            details: error.message,
+            code: error.code,
+          },
+          { status: 500 }
+        );
+      }
+
+      if (!course) {
+        console.error("No se devolvió el curso creado");
+        return NextResponse.json(
+          { error: "Error al crear el curso - datos no devueltos" },
           { status: 500 }
         );
       }
 
       courseId = course.id;
     } catch (error) {
-      console.error("Error al crear curso:", error);
+      console.error("Error inesperado al crear curso:", error);
       return NextResponse.json(
-        { error: "Error interno del servidor" },
+        {
+          error: "Error interno del servidor",
+          details: error instanceof Error ? error.message : "Error desconocido",
+        },
         { status: 500 }
       );
     }
@@ -64,7 +88,6 @@ export async function POST(request: Request) {
     const courseId = formData.get("courseId") as string;
     const name = formData.get("name") as string;
     const preview_image = formData.get("preview_image") as string;
-
 
     if (!courseId) {
       return NextResponse.json(
@@ -113,7 +136,6 @@ export async function POST(request: Request) {
           error.message.includes("permission denied") ||
           error.message.includes("insufficient_privilege")
         ) {
-
           const { error: adminError } = await supabase.rpc(
             "update_course_as_admin",
             {
@@ -133,7 +155,6 @@ export async function POST(request: Request) {
               { status: 500 }
             );
           }
-
         } else {
           return NextResponse.json(
             {

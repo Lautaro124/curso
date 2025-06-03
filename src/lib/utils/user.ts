@@ -4,30 +4,35 @@ export async function isAdminValidation(userId: string): Promise<boolean> {
   const supabase = await createSSRClient();
 
   try {
-    // Primero intentar obtener is_admin de la tabla profiles
+    // Intentar obtener is_admin de la tabla profiles
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("is_admin")
       .eq("id", userId)
       .single();
 
-    if (profile && profile.is_admin !== null) {
-      return profile.is_admin;
-    }
-
-    // Si no se encuentra en profiles, verificar en user metadata como fallback
     if (profileError) {
-      const { data: userData } = await supabase.auth.getUser();
+      console.error("Error al verificar perfil de admin:", profileError);
+      // En caso de error, verificar usando la función RPC
+      try {
+        const { data: isAdminResult, error: rpcError } = await supabase.rpc(
+          "is_admin",
+          { user_id: userId }
+        );
 
-      if (userData.user && userData.user.id === userId) {
-        const isAdminFromMeta =
-          userData.user.user_metadata?.is_admin === "true" ||
-          userData.user.user_metadata?.is_admin === true;
-        return isAdminFromMeta;
+        if (rpcError) {
+          console.error("Error en RPC is_admin:", rpcError);
+          return false;
+        }
+
+        return isAdminResult || false;
+      } catch (rpcError) {
+        console.error("Error en RPC fallback:", rpcError);
+        return false;
       }
     }
 
-    return false;
+    return profile?.is_admin || false;
   } catch (error) {
     console.error("Error in isAdminValidation:", error);
     return false;
