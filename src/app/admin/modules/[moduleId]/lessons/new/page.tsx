@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Input from "@/components/Input";
 import Textarea from "@/components/Textarea";
+import FileUpload from "@/components/FileUpload";
 
 export default async function NewLessonPage({
   params,
@@ -52,7 +53,12 @@ export default async function NewLessonPage({
           className="space-y-6"
         >
           <Input type="hidden" name="action" value="create" label={""} />
-          <Input type="hidden" name="module_id" value={params.moduleId} label={""} />{" "}
+          <Input
+            type="hidden"
+            name="module_id"
+            value={params.moduleId}
+            label={""}
+          />{" "}
           <Input
             name="name"
             id="name"
@@ -71,14 +77,12 @@ export default async function NewLessonPage({
             id="video_url"
             type="url"
             label="URL del Video"
-          />{" "}
-          <Textarea
+          />
+          <FileUpload
             name="attachments"
-            id="attachments"
-            label="Archivos Adjuntos (JSON)"
-            rows={3}
-            placeholder='[{"name": "Documento PDF", "url": "https://example.com/doc.pdf"}]'
-          />{" "}
+            label="Archivos Adjuntos"
+            className="mt-1"
+          />
           <Textarea
             name="qa"
             id="qa"

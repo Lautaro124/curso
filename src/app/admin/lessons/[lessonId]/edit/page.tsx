@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import Input from "@/components/Input";
 import Textarea from "@/components/Textarea";
+import FileUpload from "@/components/FileUpload";
 
 export default async function EditLessonPage({
   params,
@@ -120,18 +121,11 @@ export default async function EditLessonPage({
           </div>
 
           <div>
-            <Textarea
+            <FileUpload
               name="attachments"
-              id="attachments"
-              label="Archivos Adjuntos (JSON)"
-              defaultValue={
-                lesson.attachments
-                  ? JSON.stringify(lesson.attachments, null, 2)
-                  : ""
-              }
-              rows={3}
-              placeholder='[{"name": "Documento PDF", "url": "https://example.com/doc.pdf"}]'
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#7A7CFF] focus:ring-[#7A7CFF] sm:text-sm"
+              label="Archivos Adjuntos"
+              currentFiles={lesson.attachments || []}
+              className="mt-1"
             />
           </div>
 

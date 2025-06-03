@@ -26,19 +26,50 @@ export async function POST(request: Request) {
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
     const videoUrl = formData.get("video_url") as string;
-    // const attachments = formData.get("attachments") as string;
+    const attachments = formData.get("attachments") as string;
 
     if (!moduleId || !name) {
       return new NextResponse("Faltan datos requeridos", { status: 400 });
     }
 
     try {
+      // Parsear attachments si hay datos
+      let parsedAttachments = null;
+
+      if (attachments && attachments.trim()) {
+        try {
+          parsedAttachments = JSON.parse(attachments);
+          // Validar que sea un array
+          if (!Array.isArray(parsedAttachments)) {
+            return new NextResponse("Attachments debe ser un array", {
+              status: 400,
+            });
+          }
+
+          // Validar estructura de cada archivo
+          for (const file of parsedAttachments) {
+            if (!file.name || !file.url) {
+              return new NextResponse(
+                "Cada archivo debe tener 'name' y 'url'",
+                {
+                  status: 400,
+                }
+              );
+            }
+          }
+        } catch {
+          return new NextResponse("Formato JSON inválido en attachments", {
+            status: 400,
+          });
+        }
+      }
+
       const { error } = await supabase.from("lessons").insert({
         module_id: moduleId,
         name,
         description,
         video_url: videoUrl || null,
-        attachments: null,
+        attachments: parsedAttachments,
         qa: null,
       });
 
@@ -71,6 +102,24 @@ export async function POST(request: Request) {
       if (attachments && attachments.trim()) {
         try {
           parsedAttachments = JSON.parse(attachments);
+          // Validar que sea un array de objetos con name y url
+          if (!Array.isArray(parsedAttachments)) {
+            return new NextResponse("Attachments debe ser un array", {
+              status: 400,
+            });
+          }
+
+          // Validar estructura de cada archivo
+          for (const file of parsedAttachments) {
+            if (!file.name || !file.url) {
+              return new NextResponse(
+                "Cada archivo debe tener 'name' y 'url'",
+                {
+                  status: 400,
+                }
+              );
+            }
+          }
         } catch {
           return new NextResponse("Formato JSON inválido en attachments", {
             status: 400,
