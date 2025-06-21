@@ -1,7 +1,6 @@
 import { createSSRClient } from "@/lib/supabase/server";
 import { getUserCoursesWithModules } from "@/lib/utils/courses";
 import Link from "next/link";
-import Image from "next/image";
 
 type Course = {
   course_id: string;
@@ -48,16 +47,13 @@ export default async function Dashboard() {
             <div className="p-6">
               <div className="flex items-center gap-4 mb-4">
                 {course.course_preview_image && (
-                  <Image
-                    src={course.course_preview_image}
-                    alt={course.course_name}
-                    className="object-cover rounded-lg h-full w-full"
-                    fill={false}
-                    width={64}
-                    height={64}
-                    style={{ objectFit: "cover", borderRadius: "0.5rem" }}
-                    unoptimized={false}
-                  />
+                  <div className="relative h-16 w-16 flex-shrink-0">
+                    <img
+                      src={course.course_preview_image}
+                      alt={course.course_name}
+                      className="object-cover rounded-lg h-full w-full"
+                    />
+                  </div>
                 )}
                 <h3 className="text-xl font-semibold text-gray-800">
                   {course.course_name}

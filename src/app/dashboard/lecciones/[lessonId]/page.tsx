@@ -3,9 +3,20 @@ import { getLessonDetails, getLessonNavigation } from "@/lib/utils/modules";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { VideoPlayer } from "@/components/VideoPlayer";
+import AttachmentDownload from "@/components/AttachmentDownload";
 
 interface PageProps {
   params: Promise<{ lessonId: string }>;
+}
+
+interface AttachmentFile {
+  name: string;
+  url: string;
+}
+
+interface QAItem {
+  question: string;
+  answer: string;
 }
 
 export default async function LessonDetailPage({ params }: PageProps) {
@@ -148,68 +159,96 @@ export default async function LessonDetailPage({ params }: PageProps) {
               </div>
             </div>
           )}
-        </div>
-
+        </div>{" "}
         <div className="lg:col-span-1">
-          {lessonDetail.attachments && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-6">
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                  Archivos adjuntos
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <svg
-                      className="w-5 h-5 text-gray-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
-                      />
-                    </svg>
-                    <span className="text-sm text-gray-700">
-                      Material de apoyo disponible
-                    </span>
+          {lessonDetail.attachments &&
+            Array.isArray(lessonDetail.attachments) &&
+            lessonDetail.attachments.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-6">
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Archivos adjuntos ({lessonDetail.attachments.length})
+                  </h3>{" "}
+                  <div className="space-y-3">
+                    {lessonDetail.attachments.map(
+                      (file: AttachmentFile, index: number) => (
+                        <AttachmentDownload key={index} file={file} />
+                      )
+                    )}
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-
-          {lessonDetail.qa && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                  Preguntas y respuestas
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                    <svg
-                      className="w-5 h-5 text-blue-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span className="text-sm text-blue-700">
-                      Sección de Q&A disponible
-                    </span>
+            )}{" "}
+          {lessonDetail.qa &&
+            Array.isArray(lessonDetail.qa) &&
+            lessonDetail.qa.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Preguntas y respuestas ({lessonDetail.qa.length})
+                  </h3>
+                  <div className="space-y-4">
+                    {lessonDetail.qa.map((qaItem: QAItem, index: number) => (
+                      <div
+                        key={index}
+                        className="border-l-4 border-blue-500 bg-blue-50 p-4 rounded-r-lg"
+                      >
+                        <div className="mb-3">
+                          <div className="flex items-start gap-2">
+                            <svg
+                              className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            <div>
+                              <h4 className="font-medium text-blue-800 text-sm">
+                                Pregunta
+                              </h4>
+                              <p className="text-blue-700 text-sm mt-1">
+                                {qaItem.question}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="ml-6">
+                          <div className="flex items-start gap-2">
+                            <svg
+                              className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            <div>
+                              <h4 className="font-medium text-green-800 text-sm">
+                                Respuesta
+                              </h4>
+                              <p className="text-green-700 text-sm mt-1">
+                                {qaItem.answer}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
       </div>
 
