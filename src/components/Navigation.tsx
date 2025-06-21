@@ -10,26 +10,6 @@ interface NavigationProps {
 export default function Navigation({ currentSection }: NavigationProps) {
   const pathname = usePathname();
 
-  // Función para determinar el texto de la página actual
-  const getPageTitle = (path: string) => {
-    if (path.includes("/admin/users")) return "Gestión de Usuarios";
-    if (path.includes("/admin/courses") && path.includes("/edit"))
-      return "Editar Curso";
-    if (path.includes("/admin/courses") && path.includes("/modules/new"))
-      return "Nuevo Módulo";
-    if (path.includes("/admin/courses")) return "Gestión de Cursos";
-    if (path.includes("/admin/modules") && path.includes("/edit"))
-      return "Editar Módulo";
-    if (path.includes("/admin/modules") && path.includes("/lessons/new"))
-      return "Nueva Lección";
-    if (path.includes("/admin/lessons") && path.includes("/edit"))
-      return "Editar Lección";
-    if (path.includes("/dashboard/modulos")) return "Módulo";
-    if (path.includes("/dashboard/lecciones")) return "Lección";
-    if (path.includes("/dashboard")) return "Mis Cursos";
-    return "";
-  };
-
   // Función para verificar si un enlace está activo
   const isActiveLink = (path: string) => {
     if (path === "/admin/users" && pathname.includes("/admin/users"))
