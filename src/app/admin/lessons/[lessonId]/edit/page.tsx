@@ -9,8 +9,9 @@ import QAEditor from "@/components/QAEditor";
 export default async function EditLessonPage({
   params,
 }: {
-  params: { lessonId: string };
+  params: Promise<{ lessonId: string }>;
 }) {
+  const { lessonId } = await params;
   const supabase = await createSSRClient();
 
   // Obtener información de la lección, módulo y curso
@@ -35,7 +36,7 @@ export default async function EditLessonPage({
       )
     `
     )
-    .eq("id", params.lessonId)
+    .eq("id", lessonId)
     .single();
 
   if (!lesson) {

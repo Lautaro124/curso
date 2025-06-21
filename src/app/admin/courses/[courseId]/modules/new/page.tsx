@@ -6,15 +6,16 @@ import Input from "@/components/Input";
 export default async function NewModulePage({
   params,
 }: {
-  params: { courseId: string };
+  params: Promise<{ courseId: string }>;
 }) {
+  const { courseId } = await params;
   const supabase = await createSSRClient();
 
   // Obtener información del curso
   const { data: course } = await supabase
     .from("courses")
     .select("name")
-    .eq("id", params.courseId)
+    .eq("id", courseId)
     .single();
 
   if (!course) {
@@ -43,14 +44,8 @@ export default async function NewModulePage({
           method="POST"
           className="space-y-6"
         >
-          <Input type="hidden" name="action" value="create" label={""} />
-          <Input
-            type="hidden"
-            name="course_id"
-            value={params.courseId}
-            label={""}
-          />
-
+          <Input type="hidden" name="action" value="create" label={""} />{" "}
+          <Input type="hidden" name="course_id" value={courseId} label={""} />
           <div>
             <Input
               type="text"
@@ -60,7 +55,6 @@ export default async function NewModulePage({
               label={" Nombre del Módulo"}
             />
           </div>
-
           <div className="flex items-center">
             <input
               type="checkbox"
@@ -75,7 +69,6 @@ export default async function NewModulePage({
               Módulo de pago
             </label>
           </div>
-
           <div className="flex justify-end">
             <button
               type="submit"

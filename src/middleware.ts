@@ -9,6 +9,9 @@ export async function middleware(request: NextRequest) {
     },
   });
 
+  // Agregar el pathname a los headers para acceso en el servidor
+  response.headers.set("x-pathname", request.nextUrl.pathname);
+
   const supabase = await createSSRClient();
 
   const {

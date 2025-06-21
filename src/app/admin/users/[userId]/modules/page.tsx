@@ -5,8 +5,9 @@ import { redirect } from "next/navigation";
 export default async function UserModulesPage({
   params,
 }: {
-  params: { userId: string };
+  params: Promise<{ userId: string }>;
 }) {
+  const { userId } = await params;
   const supabase = await createSSRClient();
 
   // Verificar si el usuario es administrador
@@ -21,7 +22,7 @@ export default async function UserModulesPage({
   const { data: targetUser } = await supabase
     .from("profiles")
     .select("full_name")
-    .eq("id", params.userId)
+    .eq("id", userId)
     .single();
 
   if (!targetUser) {
@@ -49,7 +50,7 @@ export default async function UserModulesPage({
   const { data: enabledModules } = await supabase
     .from("user_modules")
     .select("module_id")
-    .eq("user_id", params.userId);
+    .eq("user_id", userId);
 
   const enabledModuleIds = new Set(
     enabledModules?.map((m) => m.module_id) || []
@@ -129,11 +130,7 @@ export default async function UserModulesPage({
                           method="POST"
                           className="flex items-center"
                         >
-                          <input
-                            type="hidden"
-                            name="userId"
-                            value={params.userId}
-                          />
+                          <input type="hidden" name="userId" value={userId} />
                           <input
                             type="hidden"
                             name="moduleId"

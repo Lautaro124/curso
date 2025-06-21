@@ -30,28 +30,6 @@ export default async function AdminCoursesPage() {
 
   return (
     <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-gray-800">
-            Gestión de Cursos
-          </h2>
-          <div className="flex gap-4">
-            <Link
-              href="/admin/users"
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
-            >
-              Gestionar Usuarios
-            </Link>
-            <Link
-              href="/admin/courses/new"
-              className="px-4 py-2 bg-[#7A7CFF] text-white rounded-md hover:bg-[#6A6CFF] transition-colors"
-            >
-              Crear Curso
-            </Link>
-          </div>
-        </div>
-      </div>
-
       <div className="space-y-6">
         {courses?.map((course) => (
           <div

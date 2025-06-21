@@ -9,8 +9,9 @@ import QAEditor from "@/components/QAEditor";
 export default async function NewLessonPage({
   params,
 }: {
-  params: { moduleId: string };
+  params: Promise<{ moduleId: string }>;
 }) {
+  const { moduleId } = await params;
   const supabase = await createSSRClient();
 
   const { data: module } = await supabase
@@ -24,7 +25,7 @@ export default async function NewLessonPage({
       )
     `
     )
-    .eq("id", params.moduleId)
+    .eq("id", moduleId)
     .single();
 
   if (!module) {
@@ -53,13 +54,8 @@ export default async function NewLessonPage({
           method="POST"
           className="space-y-6"
         >
-          <Input type="hidden" name="action" value="create" label={""} />
-          <Input
-            type="hidden"
-            name="module_id"
-            value={params.moduleId}
-            label={""}
-          />{" "}
+          <Input type="hidden" name="action" value="create" label={""} />{" "}
+          <Input type="hidden" name="module_id" value={moduleId} label={""} />{" "}
           <Input
             name="name"
             id="name"

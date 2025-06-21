@@ -1,13 +1,13 @@
 import Header from "@/components/Header";
 
-export default async function DashboardLayout({
+export default async function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <>
-      <Header currentSection="dashboard" />
+      <Header currentSection="admin" />
       {children}
     </>
   );

@@ -20,20 +20,6 @@ export default async function AdminUsersPage() {
 
   return (
     <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 mb-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-gray-800">
-            Gestión de Usuarios
-          </h2>
-          <Link
-            href="/admin/courses"
-            className="px-4 py-2 bg-[#7A7CFF] text-white rounded-md hover:bg-[#6A6CFF] transition-colors"
-          >
-            Gestionar Cursos
-          </Link>
-        </div>
-      </div>
-
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">

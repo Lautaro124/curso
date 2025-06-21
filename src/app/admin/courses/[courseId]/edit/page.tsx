@@ -7,15 +7,16 @@ import ImageUpload from "@/components/ImageUpload";
 export default async function EditCoursePage({
   params,
 }: {
-  params: { courseId: string };
+  params: Promise<{ courseId: string }>;
 }) {
+  const { courseId } = await params;
   const supabase = await createSSRClient();
 
   // Obtener información del curso
   const { data: course } = await supabase
     .from("courses")
     .select("id, name, preview_image")
-    .eq("id", params.courseId)
+    .eq("id", courseId)
     .single();
 
   if (!course) {

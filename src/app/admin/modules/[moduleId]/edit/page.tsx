@@ -6,8 +6,9 @@ import Input from "@/components/Input";
 export default async function EditModulePage({
   params,
 }: {
-  params: { moduleId: string };
+  params: Promise<{ moduleId: string }>;
 }) {
+  const { moduleId } = await params;
   const supabase = await createSSRClient();
 
   // Obtener información del módulo y su curso
@@ -21,7 +22,7 @@ export default async function EditModulePage({
       course_id
     `
     )
-    .eq("id", params.moduleId)
+    .eq("id", moduleId)
     .single();
 
   if (!module) {
